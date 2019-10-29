@@ -61,18 +61,27 @@ export default {
   methods: {
     login () {
       // 获取表单组件实例 ---> 调用校验函数
-      this.$refs['loginForm'].validate((valid) => {
+      this.$refs['loginForm'].validate(async valid => {
         if (valid) {
           // 发请求 校验手机号和验证码  后台
-          this.$http.post('authorizations', this.loginForm).then(res => {
-            // 成功
-            // 保存用户信息（token）
-            local.setUser(res.data.data)
+          // this.$http.post('authorizations', this.loginForm).then(res => {
+          //   // 成功
+          //   // 保存用户信息（token）
+          //   local.setUser(res.data.data)
+          //   this.$router.push('/')
+          // }).catch(() => {
+          //   // 失败 提示
+          //   this.$message.error('手机号或验证码错误')
+          // })
+
+          // 当一段代码不能保证一定没有报错  try {} catch (e) {} 捕获异常处理异常
+          try {
+            const { data: { data } } = await this.$http.post('authorizations', this.loginForm)
+            local.setUser(data)
             this.$router.push('/')
-          }).catch(() => {
-            // 失败 提示
+          } catch (e) {
             this.$message.error('手机号或验证码错误')
-          })
+          }
         }
       })
     }

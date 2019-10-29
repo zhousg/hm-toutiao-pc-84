@@ -51,15 +51,15 @@
         <!-- 文字 -->
         <span class="text">江苏传智播客科技教育有限公司</span>
         <!-- 下拉菜单组件 -->
-        <el-dropdown class="dropdown">
+        <el-dropdown class="dropdown" @command="handleClick">
           <span class="el-dropdown-link">
-            <img class="headIcon" src="../../assets/avatar.jpg" alt />
-            <span class="userName">用户名称</span>
+            <img class="headIcon" :src="userInfo.photo" alt />
+            <span class="userName">{{userInfo.name}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-unlock">退出登录</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-setting" command="setting">个人设置</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-unlock" command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-header>
@@ -72,16 +72,41 @@
 </template>
 
 <script>
+import local from '@/utils/local'
 export default {
   data () {
     return {
-      isOpen: true
+      isOpen: true,
+      userInfo: {}
     }
+  },
+  created () {
+    // 设置用户信息
+    const user = local.getUser() || {}
+    this.userInfo.name = user.name
+    this.userInfo.photo = user.photo
   },
   methods: {
     toggleMenu () {
       // 切换左菜单 展开与收起
       this.isOpen = !this.isOpen
+    },
+    // 事件根本没有触发  click事件
+    // 给组件绑定事件，如果组件不支持，事件不会触发。
+    // 把事件绑定在 组件解析后的原生dom上
+    // 事件修饰符：prevent once stop  native意思是把事件绑定在原生dom上
+    setting () {
+      this.$router.push('/setting')
+    },
+    logout () {
+      local.delUser()
+      this.$router.push('/login')
+    },
+    handleClick (command) {
+      // command 值  setting | logout
+      // this[command]() === this.setting()
+      // this[logout]() === this.logout()
+      this[command]()
     }
   }
 }
