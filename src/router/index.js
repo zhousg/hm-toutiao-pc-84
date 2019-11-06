@@ -10,6 +10,7 @@ import Article from '@/views/article'
 import Image from '@/views/image'
 import Publish from '@/views/publish'
 import Comment from '@/views/comment'
+import Setting from '@/views/setting'
 
 Vue.use(VueRouter)
 
@@ -31,7 +32,9 @@ const router = new VueRouter({
         // 发布文章
         { path: '/publish', component: Publish },
         // 评论
-        { path: '/comment', component: Comment }
+        { path: '/comment', component: Comment },
+        // 设置
+        { path: '/setting', component: Setting }
       ]
     },
     // 匹配  不符合路由规则的路径
